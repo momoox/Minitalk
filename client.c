@@ -6,13 +6,16 @@
 /*   By: mgeisler <mgeisler@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 17:46:12 by mgeisler          #+#    #+#             */
-/*   Updated: 2023/05/27 18:18:36 by mgeisler         ###   ########.fr       */
+/*   Updated: 2023/05/31 14:35:30 by mgeisler         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <signal.h>
 #include <unistd.h>
+#include "ft_printf/ft_printf.h"
+
 int		ft_atoi(char *str);
+
 void	sendchar(char c, int pid);
 
 int	ft_atoi(char *str)
@@ -42,32 +45,49 @@ int	ft_atoi(char *str)
 	return (n * nb);
 }
 
+void	received(int signum)
+{
+	(void)signum;
+	ft_printf("Message received\n");
+}
+
 void	sendchar(char c, int pid)
 {
-	int i;
+	int	i;
 
 	i = 7;
-	while(i >= 0)
+	while (i >= 0)
 	{
-		if((c >> i) % 2 == 0)
+		if ((c >> i) % 2 == 0)
 			kill(pid, SIGUSR2);
 		else
 			kill(pid, SIGUSR1);
+		usleep(500);
 		i--;
-		usleep(100);
 	}
 }
+
 int	main(int argc, char **argv)
 {
-	int i;
-	int pid;
+	int	i;
+	int	pid;
 
 	i = 0;
-	(void)argc;
-	pid = ft_atoi(argv[1]);
-	while(argv[2][i])
+	signal(SIGUSR1, received);
+	if (argc == 3)
 	{
-		sendchar(argv[2][i], pid);
-		i++;
+		pid = ft_atoi(argv[1]);
+		while (argv[2][i])
+		{
+			sendchar(argv[2][i], pid);
+			i++;
+		}
+		sendchar('\0', pid);
 	}
+	else
+	{
+		ft_printf("Error: wrong number of arguments\n");
+		return (1);
+	}
+	return (0);
 }

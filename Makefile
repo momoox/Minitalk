@@ -21,6 +21,9 @@ $(SERVER_NAME): $(SERVER_OBJECTS)
 
 %.o: %.c 
 		$(CC) $(CFLAGS) -c $? -g3
+
+bonus: all
+
 clean:
 		rm -f $(CLIENT_OBJECTS)
 		rm -f $(SERVER_OBJECTS)
