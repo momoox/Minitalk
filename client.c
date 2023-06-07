@@ -14,10 +14,6 @@
 #include <unistd.h>
 #include "ft_printf/ft_printf.h"
 
-int		ft_atoi(char *str);
-
-void	sendchar(char c, int pid);
-
 int	ft_atoi(char *str)
 {
 	int	i;
